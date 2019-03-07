@@ -46,3 +46,12 @@ GIT 代码管理工具
     ②查看分支状态: git status
       说明:初始默认工作分支为master,当工作区和仓库不一致时,会有相应的提示信息
     ③将工作区内容记录到暂存区: git add(files)
+      例:将file1 file2提交
+        git add  file1 file2
+
+        提交当前目录下所有文件(*,不能提交隐藏文件,隐藏文件需用指定文件提交)
+        git add *
+    ④取消文件暂存记录: git rm --cached [file]
+
+    ⑤将文件同步到本地仓库区: git commit -m [message]
+      说明:每次同步都需要添加同步信息,commit操作只能同步暂存区已经记录的内容
