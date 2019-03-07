@@ -1,0 +1,227 @@
+for in语句的实质是while语句+迭代器+try语句的组合
+
+生成器: genertor
+ (容器会占用内存空间)
+ 是能够动态提供数据的可迭代对象
+ 是在程序运行时生成数据,与容器不同,它通常不会在内存中保存大量的数据,而是现用现生成.
+
+生成器有两种:
+  生成器函数
+  生成器表达式
+ 
+生成器函数的定义:
+
+ 含有yield的语句的函数是生成器函数,此函数被调用将返回一个生成器对象
+(yield翻译为(产生或生成))
+(生成器是用算法提供数据,而不是在容器里面提取数据)
+
+yield语句
+ 语法:
+  yield 表达式
+ 说明:
+  yield用于def函数中,目的是将此函数作为生成器函数使用
+  yield 用来生成数据,供迭代器的next(it)函数使用
+
+生成器函数说明:
+ 生成器函数的调用将返回一个生成器对象,生成器对象是一个可迭代对象
+ 在生成器函数调用return会触发一个StopIteration异常(即生成数据结束)
+
+def my(n):
+    i=0
+    while i<n:
+        yield i
+        i+=1
+
+for x in my(3):
+    print(x)
+
+生成器表达式:
+ 语法:
+  (表达式 for 变量 in 可迭代对象[if 真值表达式])
+ 说明:
+  if 子句可以省略
+ 作用:
+  用推导式形式创建一个新的生成器
+
+ 示例:
+  gen=(x**2 for x in range(1,6))
+  it= iter(gen)
+  print(next(it))
+ ...
+   print(next(it)) #StopIteration
+
+说明:
+  生成器通常是一次性的,当数据获取完毕后不能在提供数据
+
+l =[2,3,5,7]
+A=[x*10 for x in l]
+it=iter(A)
+print(next(it))  #20
+l[1]=33
+print(next(it))  #30
+
+l =[2,3,5,7]
+A=(x*10 for x in l)
+it=iter(A)
+print(next(it))  #20
+l[1]=33
+print(next(it))  #330
+
+迭代工具函数:
+ zip函数
+ enumerate 函数
+
+zip函数
+ zip(itere1[,itere2....])
+返回一个zip生成器对象,此对象用于生成一个元组,
+此元组的个数分别来自于参数中可迭代对象,生成元组的个数由最小的可迭代对象大小决定
+ 示例:
+  number=[1,2,3,4]
+  name=['搜索','af','阿凡达','阿道夫']
+  for t in zip(number,name)
+     print(t)
+
+ d = dict(zip(name,number))
+
+zip函数的实现原理:
+  def myzip(a,b):
+     x=iter(a)
+     y=iter(b)
+     while Ture:
+        yield (next(x),next(y))
+  number=[1,2,3,4]
+  name=['搜索','af','阿凡达','阿道夫']
+
+enumerate函数
+ 格式: 
+  enumerate(iterable,start=0)
+ 作用:
+  生成一个枚举对象,此枚举对象生成的数据将原可迭代对象的数据与索引值形式元组(index,value)形式返回
+  示例:
+  L=[3,5,8,10]
+  for i,v in enumerate(L):
+     print(i,v)
+
+字节串和字节数组
+序列有五种(字符串,列表,元组,字节串,字节串数组)
+
+字节串bytes(也叫字节序列)
+  作用:
+  存储以字节为单位的数据
+  字节串是不可变的字节序列
+ 字节:
+  字节是0-255之间的整数,用来表示一个字节(8个位)的取值
+  数据存储的最小单位
+
+字节:byte
+位:bit
+1byte=8bit
+
+
+
+
+
+字节串里面所有的东西都代表数字
+
+创建控字节串的字面值:
+B=b''     #B绑定空字节串
+B=b""
+B=b''''''
+B=b""""""
+
+创建非空字节串:
+B=b'abc'
+
+字节串的构造函数:bytes
+bytes()  生成一个空的字节串,等同于b''
+bytes(整数可迭代对象) 用可迭代对象初始化一个字节串
+bytes(整数n) 生成n个为0的字节串
+bytes(字符串,encoding='utf-8')用字符串转换编码生成一个字节串
+ 
+ 示例:
+ B=bytes(range(65,69))   #B=b'ABCD'
+ B=bytes(2)     # B=b'\x00\x00'
+ B=bytes('hello','utf-8')  #B=b'hello'
+
+bytes运算:
+ + +=  * *=
+< <= > >= == !=
+in / not in
+索引和切片
+
+bytes与str的区别:
+  bytes存储字节(0-255)
+  str存储Unicode字符(0-0x10FFFF)
+
+bytes与str转换
+      编码(encode)
+str  ---->   bytes 
+
+b=s.encode(encoding='utf-8')
+
+
+        编码(decode)
+bytes  ------>  str
+  s=b.decode(encoding='utf-8')
+
+
+示例:
+s='ABC中文'
+b=s.encode()
+s2=b.decode()
+
+字节数组:bytearray
+ 可变的字节序列
+
+字节数组的构造函数
+(同字节串)
+bytearray()
+
+
+不可变     可变的
+tuple     list
+frozenset  set
+bytes     bytearray
+
+注:字节数组的索引和切片可以赋值操作
+
+bytearray的方法
+ 参见bytearray.html
+
+文件:file
+文件是用于数据存储的单位
+通常用来长期存储数据
+文件中的数据是以字节为单位进行顺序存储的
+
+文件的操作流程
+1,打开文件
+2,读写文件
+3,关闭文件
+
+文件的打开和关闭
+ 文件需要在使用时先打开文件才能读写
+ 在不需要读写文件时,应及时关闭文件已释放系统资源
+ 任何操作系统,一个应用程序同时打开文件的数量有最大数限制
+
+文件的打开函数:
+  open(file,mode='rt')
+  用于打开一个文件,返回此文件对象,如果打开失败,则会触发OSError类型的错误
+
+文件的关闭方法:
+  F.close()关闭文件,释放系统资源
+
+文本文件的读取数据方法:
+ F.read([n])
+F.readline()
+F.readlines() 
+参见文档:  文件.html
+
+示例:
+s=f.read()   #不写参数,读取全部内容
+print(s,len(s))
+
+f.read(2)   #读取前两个字符
+f.read(3)   #继续往后读3个字符,(只要文件不关闭,会依次往后读取)
+
+F.readline()  #按行读取
+F.readlines()  读取多行,以换行符'\n'分隔,形成字符串

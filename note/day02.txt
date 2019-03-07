@@ -1,0 +1,236 @@
+杨吉钰
+yangjiyu@tedu.cn
+
+Trainning-day01回顾
+1、who ：查看登录到系统的用户信息
+2、pwd ：查看当前所在路径
+3、ls ：查看当前目录的内容
+	ls -l 
+	ls -a
+	ls -la  /  ls -l -a
+	ls -l /home/tarena/AID1812 #显示某个目录下内容
+4、路径
+	相对路径：不以 / 开头的目录
+	绝对路径：以 / 开头的目录
+5、cd ：切换到目录
+	cd .. 到上一级目录
+	cd    到用户主目录
+	cd /  到根目录
+	cd -  最近访问的两个目录之间来回切换
+6、mkdir 创建目录
+	mkdir 目录名
+	mkdir 目录1 目录2 ... 目录n
+	mkdir -p 目录1/目录2/ ...
+7、touch : 创建文件
+	touch 文件名
+	touch 文件1 文件2 ... 文件n
+
+trainning-day02笔记
+1、rmdir
+	1、作用
+		删除一个或者多个空的文件夹(文件夹内容必须为空)
+	2、格式
+		rmdir 文件夹
+2、rm
+	1、作用
+		删除文件或文件夹
+	2、格式
+		rm [选项] 文件/目录
+		常用选项
+			-r 删除全部文件或者文件夹(包含文件夹当中的全部内容)
+			-i 删除前提示(y代表yes，n代表no)
+			-f 强制删除，不给任何提示
+		最常用
+			rm -rf 文件名/目录名
+		
+3、clear
+	1、作用
+		清屏
+	2、用法
+		clear
+		Ctrl + l
+
+练习
+	1、从当前目录切换到 /usr/local
+		cd /usr/local
+	2、使用绝对路径，从当前目录切换到 /usr/local/lib
+		cd /usr/local/lib
+	3、使用相对路径，从当前路径切换到 /usr
+		cd ../../
+	4、切换当前路径到上一次访问的目录
+		cd -
+	5、切换当前目录到上一级目录
+		cd ..
+	6、从任何其他目录返回到用户主目录
+		cd
+		cd ~
+		cd /home/tarena
+	7、你当前目录是 /usr/local/,现在切换到 /home/tarena
+		同6
+	8、在当前目录下创建python目录
+		mkdir python
+	9、在Python目录下创建 day01 day02 day03 目录
+		cd python
+		mkdir day01 day02 day03
+	10、在day01目录下创建day01.txt 文件
+		cd day01
+		touch day01.txt
+		touch day01/day01.txt
+	11、删除day01目录
+		rm -rf day01
+4、通配符
+	1、* 匹配任意多个任意字符(所有)
+	2、？匹配一个任意字符
+	示例：
+		ls *.txt
+		rm -rf *.txt
+5、文本编辑器vi/vim
+	1、格式
+		vi 文件名
+	2、如何编辑
+		vi的三种工作模式
+			1、正常模式(启动以后进入的模式)
+				浏览文本
+			2、插入模式
+				该模式下能编辑文本
+			3、命令行模式 :
+	3、文本的写入步骤
+		1、vi 文件名
+		2、正常模式 ---> 插入模式
+			a ：在当前光标后面插入
+			i ：在当前光标前面插入
+			o ：在当前光标下一行插入
+		3、编辑完成之后，按ESC键，由插入模式变回到正常模式
+		4、按shift + : 由正常模式  -->  命令行模式
+		5、在:命令行模式输入以下内容
+			:w      保存
+			:wq     保存并退出
+			:q      退出
+			:q!     强制退出
+练习：
+	1、查看/home目录下的内容
+		ls /home
+	2、以列表显示/home目录内容
+		ls -l /home
+	3、查看/home所有内容包含隐藏文件
+		ls -a /home
+	4、进入到用户主目录，查看当前目录
+		cd
+		pwd
+	5、用户主目录下创建目录a和b
+		mkdir a b
+	6、进入a目录后，一个命令创建2级目录aa/aaa
+		cd a
+		mkdir -p aa/aaa
+	7、使用绝对路径进入用户主目录下的a/aa/aaa目录，并新建文件rain_rain_go_away 和 little_star
+		cd /home/tarena/a/aa/aaa
+		touch rain_rain_go_away little_star
+	8、用vi编辑器编辑7题中的文件rain_rain_go_away,写入以下内容
+		Rain rain go away
+		Come again anthor day
+		Little Bada wants to play
+		So come again anthor day
+		Rain rain go away
+		Come again anthor day
+		Little Bada wants to play
+		So come again anthor day
+6、cp
+	1、作用
+		复制文件/目录
+	2、格式
+		1、复制文件：cp 源文件 目标文件
+		2、复制目录：cp -r 目录1 目录2
+7、mv
+	1、作用
+		剪切 / 重命名
+	2、格式
+		1、重命名：
+			mv 文件名1 文件名2
+			mv 目录名1 目录名2
+		2、剪切：
+			mv 文件名1 路径/文件名2
+			mv 目录名1 路径/目录名2
+8、cat
+	1、作用：
+		查看文本内容(在终端输出显示)
+	2、格式
+		cat 文件名
+练习
+	1、使用两种方式查看rain_rain_go_away的文件内容
+		vi rain_rain_go_away
+		cat rain_rain_go_away
+	2、进入到/home/tarena/a/aa/aaa下，拷贝little_star,副本名为little_star_cp
+		cd /home/tarena/a/aa/aaa
+		cp little_star little_star_cp
+	3、拷贝文件little_star 到b目录下并重名名为little_star2
+		cp little_star ~/b/little_star2
+	4、打开little_star2，文件首行插入内容“rain rain go away”，保存退出
+		vi little_star2
+		按a
+		rain rain go away
+		按ESC
+		shift + ：
+		wq + 回车
+	5、将rain_rain_go_away 文件移动到b目录
+		mv ~/a/aa/aaa/rain_rain_go_away ~/b
+9、date
+	1、作用
+		显示系统当前时间
+	2、date +%F  显示 年-月-日
+	3、date +%H:%M:%S  显示 时:分:秒
+10、head
+	1、作用
+		查看文件头几行
+	2、格式
+		head -n 文件名
+11、tail
+	1、作用
+		查看文件末尾几行
+	2、格式
+		tail -n 文件名
+12、find
+	1、作用
+		查找文件或目录
+	2、格式
+		find 要查找的位置 -name "文件名/目录名"
+13、grep
+	1、作用
+		在文件中查找指定内容的行
+	2、格式
+		grep "内容" 文件名
+	3、示例
+		cat /etc/passwd
+		grep "root" /etc/passwd
+14、wc
+	1、作用
+		统计文件中有多少行
+	2、格式
+		wc -l 文件名
+	3、示例
+		wc -l /etc/passwd
+15、echo
+	1、作用
+		显示文本
+	2、格式
+		echo "内容"
+练习
+	1、在/home/tarena目录，将用户主目录下的a目录拷贝到目录b(分别使用相对路径和绝对路径)
+		绝对路径
+			cp -r /home/tarena/a /home/tarena/b
+		相对路径
+			cd
+			cp -r a b
+	2、复制/etc目录下的所有l(小写L)开头，以.conf结尾的文件/home/tarena/a中
+		cp /etc/l*.conf /home/tarena/a
+	3、进入到用户主目录，删除所有以l(小写L)开头，以.conf结尾的文件
+		cd
+		rm -rf l*.conf
+	4、查找/bin下 r结尾的文件
+		find /bin -name "*r"
+
+
+
+
+
+
+

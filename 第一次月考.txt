@@ -1,0 +1,120 @@
+﻿-*- coding:gbk -*-
+一、选择题（每题2分，共10分）
+1.表达式[1]*2的值为
+A.[1]       B.[1]          C.[1,1]         D.[1,2]
+
+2..已知列表x=[1,2,3],那么执行语句x.insert(1,4),x的值为
+A.[1,2,3,4]    B.[1,4,2,3]     C.[4,3,2,1]        D.[4,2,3]
+
+3.已知字符串x=”hello world”,那么执行语句x.replace(‘hello’,’hi’)之后，x的值为
+A.”hello world”      B.”hillo world”    C.”hi world”    D.”world”
+
+4,for x in range(5,0,-2):
+       print(x)      
+  打印结果是？（）
+   A  4
+      2
+      0
+   B  5
+      3
+      1
+   C  0
+      2
+      4
+   D  1
+      3
+      5
+
+
+5,执行代码：
+   L = [1,2,3]
+   def func(a):
+       a = [4,5,6]
+   func(L)
+   print(L)
+
+   A [1,2,3]	B [4,5,6]	C 1,2,3    D 4,5,6                                   
+
+二、判断题（每题2分，共20分）
+1.Python 3.x完全兼容python 2.x   
+2.在Windows平台上编写的Python程序无法在Unix平台运行。   
+3.不可以在同一台计算机上安装多个Python版本         
+4.3+4j不是合法的Python表达式               
+5.Python集合可以包含相同的元素              
+6.在UTF-8编码中一个汉字需要占用3个字节     
+7.Python3.x支持使用中文作为变量名            
+8.函数中必须包含return语句                 
+9.栈和队列都具有先入后出的特点             
+10.定义类时实现了__eq__方法，该类对象即可支持运算符==.      
+                                              
+三、简答题（每题4分，共20分）
+1.	Python中List和tuples的差别是什么？
+
+2.什么是闭包？如何用Python写闭包（用Python写一个最简单的闭包）？
+
+3.Python里赋值（=）,浅拷贝，深拷贝的区别
+
+4.什么是lambda函数？它有什么好处?
+
+5.到底什么是Python？你可以在回答中与其他技术进行对比 
+
+四、代码分析题（每题5分，共20分）
+1.根据下列代码写出A0，A1，...An的最终结果
+      A0 = dict(zip((‘a’,’b’,’s’,’d’,’e’)，(1,2,3,4,5)))
+      A1 = range(10)
+	  A2 = sorted([i for i in A1 if i in A0])
+      A3 = sorted([A0[s] for s in A0])
+      A4 = [i for i in A1 if i in A3]
+      A5 = {i : i * i for i in A1}
+      A6 = [[i, i * i] for i in A1]
+      print(A0, A1, A2, A3, A4, A5, A6)
+
+2.def count():
+        fs = []
+        for i in range(1,4):
+            def f():
+                return i*i
+            fs.append(f)
+        return fs
+
+    for f in count():
+        print f()
+
+答案是什么 ？
+
+3，
+def f(x,l=[]):
+    for i in range(x):
+        l.append(i+i)
+    print l
+
+f(3)
+f(3,[3,2,1])
+f(2)
+
+
+4，有如下代码：
+a = {“one”:1,”two”:2,”three”:3} 
+a[“one”] += 1 
+print(a[“one”]) 执行结果是
+
+
+五、编程题（3*10=30）
+1、利用递归方法求5!。
+
+
+2、有一个多层嵌套的列表 A = [1,2,[3,4,[‘434’,[…]]]],请写一段代码遍历A中的每个元素并打印出来
+示例A = [1,2,[3,4,['434',[5,['535'],6]]]]
+打印：1 2 3 4 434 5 535 6 
+
+
+3，定义一个list，打印出每个元素出现的次数
+2019-2-3
+\\
+\
+//
+2018-5-10
+1.23  2.66,888.888,  1/5,60%  -88.8  -66  -6.22%
+This  The
+Hand  Hello 
+

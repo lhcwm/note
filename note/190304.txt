@@ -1,0 +1,150 @@
+一,聚合操作
+  1,聚合操作符
+    ①$match  数据筛选
+      $match  值的写法同query
+      例:筛选年龄大于20的
+        db.class0.aggregate({$match:{age:{$gte:20}}})
+    ②$limit 显示前几条文档
+      db.class0.aggregate({$limit:3})
+    ③$skip 跳过前几条文档,显示后面的内容
+      db.class0.aggregate({$skip:3})
+    ④$sort  对集合文档排序
+     db.class0.aggregate({$sort:{age:1}})
+
+  2,聚合管道
+    定义:指将多个聚合操作合并到一起完成,即将上一个聚合操作的结果作为下一个聚合操作的对象
+        直到所有聚合完成
+    形式:db.collection.aggregate([{},{},...])
+    例:统计重名的人数
+    db.class0.aggregate([{$group:{_id:'$name',num:{$sum:1}}},{$match:{num:{$gt:1}}}])
+二,固定集合
+  定义:值mongodb中创建的大小固定的集合,称之为固定集合
+  特点:1,能够淘汰早期数据
+      2,可以控制集合大小
+      3,数据插入,查找速度快
+  使用:日志处理,临时缓存
+  创建:db.creatCollection(collection,{capped:true,size:10000,max:20})
+      capped:true  表示固定集合
+      size:10000   表示固定集合大小,单位字节
+      max:20       表示最多存放多少个文档
+三,文件存储
+  1,文件存储数据库方式:
+    ①存储路径:将本地文件所在路径以字符串形式存储在数据库
+      优点:节省数据库空间
+      缺点:当数据库或者文件发生变动,必须要修改数据库内容
+    ②存储文件本身:将文件转换为二进制存储到数据库
+      优点:文件在数据库中,不易丢失
+      缺点:占用数据库空间较多,文件存取效率不高
+  2,GridFS 文件存储方案
+    目的:更好的存取mongodb中的大文件(>16M)
+    GridFS说明:①在mongodb数据库中创建两个集合共同存储文件
+              ②fs.files集合用于存储文件信息,为每个文件建立一个信息文档
+              ③fs.chunks集合中建立与fs.files集合对应文件文档的关联,将文件分块以二进制格式存储
+    存取方法:①存储:
+             mongofiles -d dbname put  file
+            ②提取:
+             mongofiles -d dbname get  file 
+  优缺点:
+    优点:存储方便,提供了较好的存取命令
+    缺点:读写效率较低,不建议存储小文件
+四,mongo shell对JavaScript支持
+  mongo shell 界面中支持基本的JS程序
+  通过JS也可以处理数据库中简单的逻辑问题
+五,Python操作mongodb
+  1,第三方模块:pymongo
+    安装方法:sudo pip3 install pymongo
+  2,操作步骤:
+    ①创建mongodb数据库连接对象
+      conn=pymongo.MongoClient('localhost',27017)
+    ②生成操作的数据库对象
+      db=conn.stu
+    ③生成集合对象
+      myset=db.class0
+    ④通过集合对象调用接口完成数据库操作
+    ⑤关闭数据库对象
+      db.close()
+  3,数据基本操作
+    ①插入文档
+      insert_one()插入一条文档
+      insert_many()插入多条文档
+      insert() 插入一条或多条文档
+      save()  保存文档,当_id重复时覆盖原文档
+    ②查找文档
+      find() 查找所有符合条件文档
+      find_one() 查找第一个符合条件的文档
+
+      find()
+      功能:查找所有文档
+      参数:形式同mongoshell 中find
+      返回值:游标对象
+
+      注:所有的操作符使用加上引号,作为字符串形式
+         mongodb中true false null使用Python中的True False None表示
+      cursor对象属性函数
+      next() 获取下一个文档
+      limit() 获取前几条文档
+      skip()  跳过几条
+      count()  计数
+      sort()  排序
+      当游标使用for或者next取值后就不能使用skip limit sort操作了
+      sort在pymongo中参数表达与mongoshell中不同
+      sort([('age',1)])  表示age升序排列
+      例:
+      for i in cursor.limit(3).sort([('name',1)]):
+      print(i)
+
+      find_one(query,field)
+      功能:查找第一个符合条件文档
+      参数:同find
+      返回值:一个字典
+
+    ③修改操作
+      update_one()  修改一个文档
+      update_many()  修改多个文档
+      update()  修改一个或多个文档
+
+    ④删除操作
+      delete_one()  删除一个文档
+      delete_many() 删除多个文档
+      remove()  删除一个或多个文档
+
+    ⑤ 复合操作
+      find_one_and_update()
+      find_one_and_delete()
+
+  4,数据库的索引聚合操作
+    1,索引:
+    create_index()
+    功能:创建索引
+    参数:二元元组构成列表
+        [('age',1)] 表示对age创建正向索引
+        直接写域名即表示对该域创建正向索引
+    list_index() 查看索引
+    drop_index() 删除索引
+    drop_indexes() 删除所有索引
+    2,聚合操作
+      aggregate()
+      功能:完成聚合操作
+      参数:聚合管道 同mongoshell中聚合
+      返回值:数据操作结果游标对象
+    
+  5,文件存储
+    步骤:
+       1,导入bson二进制类型模块,连接数据库
+         import bson.binary
+       2,选择要存储的文件使用rb方式读取内容
+       3,将读取的内容转换为bson格式
+         content=baon.binary.Binary(data)
+         功能:将bytes字串转换问bson形式
+         参数bytes字串
+         返回值:转换后的数据
+       4,将内容插入数据库
+
+作业:1,将电子词典中数据库改用mongodb数据库完成
+    2,练习中grade为每个文档增加一个域
+    {score:{Chinese:88,match:88,english:77}}
+    
+      分数为50-100随机数
+      通过pymongo完成该练习
+
+    3,复习之前进程线程网络内容

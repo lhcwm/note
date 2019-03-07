@@ -1,0 +1,196 @@
+1,数据类型:
+  1,主要数据类型
+    数值类型:整数,浮点数
+    字符类型:对应程序语言的字符串
+    日期时间类型:
+    枚举类型:具有固定取值范围的,如 性别
+    
+  2,数值类型:
+      类型         大小           范围
+    TINYINT       1Byte   0-255(无正负号)  -128~127(有正负号)
+    INT/INTEGER   4Byte   0~2^32-1(无正负号) -2^31~2^31-1(有正负号)
+    BIGINT        8Byte   0~2^64-1(无正负号) -2^63~2^63-1(有正负号)
+    DECIMAL       可变     存储精确数字,可指定最长长度/小数位数
+    
+   示例:
+    create table num_test
+    (card_type int(3) unsigned zerofill,-- 显示3位的无符号整数,左边0填充
+     dist_rate decimal(10,2));
+
+   insert into num_test values(1,0.88);-- 不满3位左边0填充
+   insert into num_test values(100,23.456);-- 23.456会四舍五入23.46
+   insert into num_test values(1000,3.45);-- 1000仍可全部显示
+   insert into num_test values(10,23);-- 23会变为浮点数23.00
+
+   说明:1,当字段使用unsigned修饰时,值只能是正数.
+        2,定义整数时指定长度,仅仅是显示宽度,存储值的大小由数据类型决定
+        3,zerofill 表示长度不足时左边用0填充
+        4,整数值超过类型的范围,插入时会报错
+        5,当浮点数小数部分超过指定长度,自动进行四舍五入
+  3,字符串类型:
+    定长:char(使用较少)
+    最大存储255个字符
+    如果长度不足指定长度,右边以空格填充
+    如果不指定长度,默认长度为1
+    超过长度无法存入
+
+    变长字符串:varchar(常用)
+    最大能存储65535个字符
+    按数据的实际大小分配存储空间
+    超过长度,无法存入
+
+    大文本类型:text
+    字符数大于65535时使用
+
+    char和varchar特点比较
+    char类型性能较高,但浪费存储空间
+    varchar节省存储空间,但效率低于char
+    一般情况下使用varchar
+
+  4,枚举类型
+    ENUM:从指定的值中选取一个
+    SET:从指定的值中选取一个或多个
+
+    示例:
+    create table enum_test
+      (name varchar(32),
+        sex enum('boy','girl'),
+        course set('music','dance','paint'));
+
+      insert into enum_test values
+        ('jj','girl','music,dance');
+
+      insert into enum_test values
+        ('ss','af','music');-- 插入指定范围以外的内容会报错
+  5,日期时间类型:
+    日期:date,  范围:'1000-01-01'~'9999-12-31'
+    时间:time,  范围:'00:00:00'~'23:59:59'
+    日期时间:datetime  年月日时分秒
+    时间戳:timestamp   
+
+    相关函数:
+    now()/sysdate()  取系统时间
+    curdate/curtime() 取当前日期/时间
+    year()/month()/day() 单独取日期中的年月日  select year(now())
+    date()/time()  单独取日期时间中的日期/时间    
+
+2,修改记录:
+  1,语法:
+    update 表名
+      set 字段1=值1,
+        字段2=值2,
+        ...
+      where 条件表达式
+  2,示例:
+    修改某个账户的状态
+    update acct
+      set status =3,
+      balance=balance-100
+      where acct_name='jj';
+
+  注意:限定好条件,如果不使用where限定条件,则修改所有数据
+      修改的值类型要与定义的类型一致
+
+3,数据删除:
+  1,语法:
+    delete from 表名 where 条件
+  2,示例:
+    删除某个账号的数据
+    delete from acct where
+      acct_name='jj';
+  注意:
+  限定好条件
+  删除之前做好备份
+
+4,运算符操作:
+  1,比较运算符:< > >= <= = <>(!=)
+    示例:
+    查询余额大于2000的记录
+    select * from acct where balance >2000;
+
+  2,逻辑运算符:
+    and:多个条件同时满足
+    or:至少满足其中一个条件
+
+  3,范围比较:
+    between  and  :在...与...之间
+    in:判断在不在某个集合内
+    not in:
+    查询所有金额在3000-20000之间的
+    select * from acct where balance between 3000 and 20000;
+
+    select * from acct where acct_name in ('jerry','tom');
+
+  4,模糊查询:
+    格式:where 字段名称 like 通配字串
+    通配符:
+     _: 匹配单个字符
+
+     %: 匹配任意个字符
+
+  5,空/非空判断:
+    判断为空: is null
+    判断非空:is not null
+
+    select * from acct where acct_type is not null;
+
+5,查询子句:排序/分组/筛选
+  1,order by子句
+    作用:order by 排序字段[ASC/DESC]
+    ASC  表示升序(默认)
+    DESC 表示降序
+
+    示例:
+    select * from acct order by balance desc;
+  2,limit子句:
+    作用:限制查询结果显示的笔数
+    格式:
+    limit n  只显示前面的n笔
+    limit m,n  从第m笔开始显示,共显示n笔.  下标是从0开始的
+    示例:
+    select * from acct order by balance limit 2,2;
+
+    经常用这种方式进行分页查询
+    页数从1开始,第n页的查询语句
+    m=(页码-1)*每页笔数
+    n=每页笔数
+    select * from page_demo limit m,n
+
+  3,聚合函数
+    max/min: 查询最大/最小
+    select max(balance) from acct;
+    avg 求平均值:
+    select avg(balance) from acct;
+    sum 求和
+    select sum(balance) from acct;
+    count 统计记录笔数
+    select count(*) from acct;
+    注:count后的括号中,跟字段名称,该字段值为空的数据不参与统计
+
+  4,group by 子句
+    作用:对结果进行分组,通常和聚合函数配合使用
+    格式:group by 分组字段名称
+    示例;
+    分组统计个状态账户的数量
+    select status '状态',count(*) '数量' from acct group by status;
+
+    注意:根据哪些字段分组,则需要先将这些字段查询出来
+
+  5,having 子句
+    作用:对分组聚合的结果进行过滤需要和group by配合使用
+    示例:
+    按照账户类型统计余额总和,过滤掉账户类型为空的数据
+    select acct_type,sum(balance) from acct 
+    group by acct_type 
+    having acct_type is not null 
+    order by acct_type desc
+    limit 1;
+    执行顺序:
+    第一步:from acct 首先执行from语句,找到数据源
+    第二步:where 执行where子句,选出满足条件的数据
+    第三步:group by acct_type 按照指定字段分组
+    第四段:sum(balance),acct_type 按照分组进行聚合
+    第五步:having acct_type is null 对分组聚合后的数据进行过滤
+    第六步:order by acct_type desc 排序
+    第七步:limit 1 限制显示的笔数
+

@@ -1,0 +1,153 @@
+一,数据查找操作
+  1,格式:db.collection.find(query,field)
+  2,用法:
+    ①find(query,field)
+    功能:查找所有符合条件的文档,参数为空表示查找集合中所有内容
+    参数:query  表示查找条件,是一个键值对构成的文档,
+               空文档表示查找所有内容
+
+        field  表示查找的域,是一个键值对构成的文档,
+               空文档表示查找所有的域
+            注: 文档中键为域名,值为1表示查找该域,0表示不查找该域
+               _id如果不想查找,必须明确_id:0
+               普通域表达式时,要么全为1,要么全为0
+    返回值:返回找到的所有文档
+
+    ②findOne(query,field)
+    功能:查找第一条符合条件的文档
+    参数:同find
+    返回值:返回查找到的文档
+
+二,query操作符使用
+  1,操作符:mongodb中使用$符号注明的一个有特殊意义的字符串,用以表达丰富的含义
+    比如:$lt表示小于
+  2,比较操作符:
+    ① $eq  等于  =
+    ② $lt  小于  <    字符串也可以比较大小
+      例:查找年龄小于17
+        db.class0.find({age:{$lt:17}})
+    ③ $gt  大于  >
+      例:年龄大于20,小于30的
+        db.class0.find({age:{$gt:20,$lt:30}},{_id:0})
+    ④ $lte  小于等于  <=
+    ⑤ $gte  大于等于  >=
+    ⑥ $ne   不等于   !=
+    ⑦ $in   包含
+      例:年龄包含在[15,17,19]中的
+        db.class0.find({age:{$in:[15,17,19]}})
+    ⑧$nin  不包含
+  3,逻辑操作符
+    ①逻辑与:  $and
+      在query中,逗号分隔的多个条件也表示与关系
+      
+    ②逻辑或:  $or
+    例:db.class0.find({$or:[{age:{$lt:17}},{sex:'f'}]},{_id:0})
+
+    ③逻辑非:  $not
+    例:db.class0.find({sex:{$not:{$eq:'f'}}})
+
+    ④逻辑异或not(A or B):  $nor
+    例:db.class0.find({$nor:[{sex:'m'},{age:{$gt:18}}]},{_id:0})
+
+    ⑤混合条件语句
+      年龄大于18 或者小于17 并且性别为女
+        db.class0.find({$and:[{$or:[{age:{$gt:18}},{age:{$lt:17}}]},{sex:'f'}]})
+      年龄大于等于17的男生 或者 姓名叫 lili或者Tom
+       db.class0.find({$or:[{age:{$gte:17}},{$or:[{name:'lili'},{name:'Tom'}]}]})
+  4,数组查找操作符:
+    1,数组:一组数据的有序集合,用[]表示
+      特点:有序性, 数据类型可以混合
+    2,查找数组中包含某个条件
+      例:查找数组中小于70的
+      db.class1.find({score:{$lt:70}},{_id:0})
+    3,查找数组中同时包含多个条件的  $all
+      例:数组中同时包含70和66
+       db.class1.find({score:{$all:[70,66]}},{_id:0})
+    4,根据数组元素个数查找  $size
+      例:查找数组内只有2个元素的
+      db.class1.find({score:{$size:2}},{_id:0})
+    5,选择数组中要查找的项  $slice(用于field参数)
+      例:显示数组中的前两项
+      db.class1.find({},{_id:0,score:{$slice:2}})
+      跳过第1项,显示后面2项
+      db.class1.find({},{_id:0,score:{$slice:[1,2]}})
+  5,其他查找操作符
+    1, $exists   判断一个域是否存在
+       查找不存在score的文档
+       db.class1.find({score:{$exists:false}})
+    2,$mod   通过除数余数搜索
+      查找age域值除以2余数为0的
+      db.class1.find({age:{$mod:[2,0]}},{_id:0})
+    3,$type  按照数据类型查找
+      查找name域数据类型为2的文档
+      db.class1.find({name:{$type:2}},{_id:0})
+
+    注:遇到没有遇到过的操作符,可以www.mongodb.com网站查看documentation中查找说明
+
+三,数据操作函数
+  1,db.collection.distinct(field)
+    功能:获取某个集合中某个域的值范围
+    参数:域名
+    返回值:取值范围的数组
+    db.class1.distinct('age')
+  2,pretty()
+    功能:将find查找结果格式化显示
+  3,limit(n)
+    功能:显示查询结果的前几条
+    参数:n   指定显示的数量
+  4,skip()
+    功能:跳过查询结果的前几个,显示后面的
+    参数:跳过的文档个数
+    例:db.class1.find({},{_id:0}).skip(1)
+  5,count()
+    功能:统计查询结果数量
+  6,sort({field:1/-1})
+    功能:对查找结果按某个域进行排序
+    参数:排序的域, 1表示升序  -1表示降序
+    例:db.class0.find({},{_id:0}).sort({age:1})
+    注:复合排序 (第一排序选项相同时按第二项排序)
+  7,通过连续调用函数返回更丰富的结果
+    db.class1.find({},{_id:0}).sort({age:-1}).limit(3)
+  8,通过序列号直接获取查找结果的某一项
+    获取查找结果的第二项
+    db.class1.find({},{_id:0}).sort({age:-1}).limit(3)[1]
+
+四,修改文档
+  1,格式:db.collection.updateOne(query,update,upsert)
+  2,修改函数:
+    ①updateOne(query,update,upsert)
+     功能:修改第一个复合条件的文档
+     参数:query  筛选条件,用法同find
+         update  要修改的数据项,需要同修改操作符一同使用
+         upsert  bool值,如果设置为true,则如果没有筛选到文档会根据
+                 query和update参数插入新的文档
+     例:
+     db.class.updateOne({name:'谢逊'},{$set:{name:'阳顶天'}})
+    
+    ②db.collection.updateMany(query,update,upsert)
+      功能:修改所有符合条件的文档
+      参数:同上
+      例:
+       db.class.updateMany({age:7},{$set:{age:13}})
+    ③db.collection.update(query,update,upsert,multi)
+      功能:修改文档
+      参数:upsert   功能同updateOne,写法上直接写true
+          multi   bool值 multi:false(默认) 同updateOne 
+                         multi:true  同updateMany
+      例:db.collection.update({age:18},{$set:{age:23}},false,true)
+    ④db.collection.findOneAndUpdate(query,update)
+      功能:查找第一个符合条件文档并修改
+      参数:query  查找条件
+          update  修改内容
+      返回值:修改前的文档
+    ⑤db.collection.findOneAndReplace(query,doc)
+      功能:查找一个文档并替换
+      参数:query  查找条件
+           doc   要替换的文档
+  
+  3,修改操作符(修改器)
+    ①$set  修改一个域的值或者增加一个域,不存在时实现增加一个域
+    ②$unset  删除一个域
+      db.class.update({name:'金毛狮王'},{$unset:{age:''}})
+    ③$rename  给域重命名
+

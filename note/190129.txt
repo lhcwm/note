@@ -1,0 +1,200 @@
+数据库MySQL
+
+1,数据库的基本概念(database)
+   1,按照,某种数据模型,对数据进行科学高效存取和管理的系统
+   2,数据库管理系统(DBMS)  *
+     Database Management System
+     位于操作系统和用户之间的软件系统,专门用于数据管理
+     常见的DBMS:Oracle,MySQL,DB2,SQL Server,Informix
+   3,数据库系统:
+     一般性统称,包含DBMS,软硬件\应用程序\DBA用户
+   4,应用场景:
+    数据库是一种重要的基础软件
+    几乎应用与所有的软件系统
+    (特别简单的单机版程序除外)
+   5,数据管理的三个阶段
+     人工管理阶段:计算机不通过数据管理;程序和数据是不可分割的整体
+         优点:管理简单,
+         缺点:数据无法实现共享\独立
+     文件系统阶段:数据单独保存在文件中,程序和数据实现了分离,
+         优点:数据独立保存,可共享,能够实现持久化存储
+         缺点:数据冗余,不一致性,数据联系弱;
+     数据库系统阶段:专门用一套软件来管理数据
+         优点:数据的可靠性\安全性,
+              数据独立性\可共享\低冗余
+              提供了友好的访问接口
+              提供了丰富的工具(性能优化,备份/恢复,权限管理)
+         缺点:需要付出额外的软硬件/人力成本
+   6,数据库概念模型
+      a,层次模型
+      b,网状模型
+      c,关系模型
+        目前主流数据库模型
+        使用二维表表示数据和数据联系的模型
+        IBM研究院 E.F.Codd在论文<大型共享数据库关系模型>首先提出
+      d,非关系模型
+   7,关系模型基本概念: *
+     a,关系:二维表,由行和列组成
+            表示数据和数据间的联系
+            行:一个实体(现实中可以区分的事物)
+            列:也叫字段,表示实体的属性
+     b,关系数据库:使用关系模型的数据库
+     c,关系术语:
+       实体:现实中可以区分的事物
+       关系:规范的二维表: 1,每个属性都是原子的(不能再分),不能重名
+                         2,关系中的次序不重要
+       元组:二维表中的一行称为元组也叫记录,表示一个实体
+       属性:二维表中的列称为属性,表示实体的某个数据特征
+       键(key):能够区分实体的唯一性的属性称为键
+       主键(Primary Key,简称PK):从多个键中选取一个逻辑上唯一区分实体的属性(或属性组合)
+                               要求非空,不重复
+   8,关系模型优点:
+     建立在严格的数据理论基础上
+     概念简单,单一,结构清晰
+     
+ 2,MySQL简介
+   1,概念:著名的,广泛使用的开源的DBMS
+         最早由瑞典MySQL AB公司开发,2008被SUN收购,2009被Oracle收购
+         原作者开发MariaDB,与MySQL保持最大兼容性
+   2,特点: 开源,成本低
+           体积小,性能优异
+           支持主流操作系统
+           支持主流的开发语言
+           可移植性强
+   3,主要版本:
+      Community Server,社区版,开源免费,不提供技术支持
+      Enterprise Edition 企业版,需付费
+      Cluster  集群版,开源免费
+      Cluster CGE 高级集群版,付费
+   4,安装配置:
+     a,windows                
+       1,下载安装文件,执行安装
+           如果缺少基础库,先安装基础库
+       2,安装过程中,需要注意到地方
+          选择组件:推荐是developer default  或 sever only
+          端口:推荐保持默认端口3306
+          root口令:牢记该口令,生产环境中,应该具有一定强度
+          添加用户:记住用户名即密码
+       3,验证:使用查看端口是否监听
+             netstat -an | findstr 3306
+     b,ubuntu下安装
+       第一步:安装组件:sudo apt_get install mysql-server
+                      sudo apt_get install mysql-client
+                      sudo apt_get install libmysqlclient-dev
+       第二步:确认安装结果
+              netstat -an | grep 3306
+   5,服务管理:
+     1, sudo /etc/init.d/masql status  查看状态
+                               start   启动服务
+                               stop    停止服务
+                               restart 重启服务
+   6,客户端,服务器
+     客户端:mysql
+     服务器:mysqld
+     客户端连接服务器命令:
+       mysql -hlocalhost -uroot -p123456
+     参数:-hlocalhost  连接localhost服务器
+          -uroot       使用root用户登录
+          -p123456     root用户密码123456
+      注:如果连接其他服务器,将localhost改为服务器的实际IP地址
+     退出:exit 或quit
+
+ 3,mysql操作:
+   1,SQL语言:结构化查询语言(structure query language)
+      1,用于数据库的各种操作,管理
+      2,每条sql语句以;(英文分号)结束
+      3,大小写不敏感
+      4,不支持tab键的自动补齐功能
+      5,使用\c废弃当前语句
+
+   2,库操作:
+     查看库: show databases
+     进入库: use 库名称
+           例:   进入sys库  use sys
+     查看当前使用的库: select database();
+     创建库: create database  库名称
+             [default charset=字符集] 
+        示例:
+        创建名为bank的库,utf8字符集
+        create database bank
+        default charset=utf8
+     删除库:drop database 库名称
+     
+     库的构成:表(存数据),视图(数据窗口),索引(提高查询速度),触发器(一个动作触发另一个动作)
+              存储过程(sql语句编写的程序),函数,用户及配置信息
+     库的命名规范:
+         由字符,数字,下划线组成,不能全部由数字构成
+         库名称区分大小写  *
+         库名称必须唯一
+         避开特殊字符,mysql的关键字
+  3,表操作:(重点)
+    1,查看表: show tables;
+    2,创建表:
+        语法: create table 表名称(
+              字段1 类型(长度)  约束,
+              字段2 类型(长度)  约束,
+              ....
+                )[指定字符集];
+        示例:  创建账户表,包含账号,户名字段
+             create table acct(acct_no varchar(32),--账号
+             acct_name varchar(128),--户名
+             ) default charset=utf8;--指定字符集
+
+    3,查看
+      查看表结构:desc acct
+      查看建表语句:show create table acct
+    4,删除表
+      drop table 表名称
+  4,数据操作(重点)
+    1,插入:
+       create table acct(
+       acct_no varchar(32),-- 账号,字符串
+       acct_name varchar(128),-- 户名
+       cust_no varchar(32),-- 客户编号
+       acct_type int,-- 账户类型
+       reg_date date,-- 开户日期,日期时间
+       status int,-- 状态
+       balance decimal(16,2) -- 余额,数字
+       ) default charset=utf8;
+
+  注: 1,不能出现中文标点符号(注释除外)
+      2,括号要正确配对,最好成对编写
+      3,最后一个字段后面不要加逗号
+      4,--后需空一个空格(英文)
+
+  插入单笔数据:
+   insert into acct values
+   ('12345678910','lucky','001',1,now(),1,11000.00);
+
+  查询验证:select * from acct;
+
+  插入多笔数据:  
+insert into acct values
+('12345678910','lucky','001',1,now(),1,11000.00),
+('12345678911','lucas','002',1,now(),1,11000.00),
+('12345678912','jerry','003',1,now(),1,11000.00);
+  指定字段插入:
+   insert into acct (acct_no,acct_name)
+   values('12345678914','kate');
+
+  2,查询操作:
+    格式:select * from 表名 [where 条件]
+         select 字段1,字段2  from 表名称 [where条件]
+    示例:
+    查询所有行所有列
+    select * from acct;
+
+    查询指定字段
+    select acct_no,acct_name,balance from acct;
+    查询指定字段,给每个字段起别名
+    select acct_no '账号',acct_name '户名',balance /10000 '余额(万元)' from acct;
+
+    带条件查询:
+    select acct_no,acct_name,balance from acct where acct_no='12345678911';
+
+
+    select acct_no,acct_name,balance from acct where acct_no='12345678911' 
+    and acct_name='jerry';
+    
+    select acct_no,acct_name,balance from acct where acct_no='12345678911' 
+    or acct_name='jerry';

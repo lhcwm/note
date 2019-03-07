@@ -1,0 +1,211 @@
+query操作符
+  比较:
+  逻辑:
+  数组:$all  $size
+  其他:$exists  $mod   $type
+
+数据处理函数:
+pretty()   limit()    skip()    sort()   count()   distinct()
+
+修改操作:
+updateOne(query,update,upsert)
+updateMany()
+update()
+findOneAndUpdate(query,update)
+findOneAndReplace(query,doc)
+
+修改器
+$set   $unset  $rename
+
+---------------------------------------------------------
+一,修改器使用:
+  1,$inc: 加法修改器 
+    例:  所有人年龄加1
+    db.class1.updateMany({},{$inc:{age:1}})
+  2,$mul: 乘法修改器 
+    例:  所有人年龄乘以2
+     db.class1.updateMany({},{$mul:{age:2}})
+
+   注:$inc  和 $mul修改器的值可以是正数,负数,整数,小数
+
+  3,$setOnInsert  当使用update*插入文档时,作为补充内容
+    例:当插入新文档时,score:[80,40,90]也会插入
+    db.class1.update({name:'丁丁'},{$set:{age:16},$setOnInsert:{score:[80,40,90]}},{upsert:true})
+  4,$max  指定某个域的值如果小于该值,则修改为该值,大于则不变.
+    例:
+    db.class1.updateOne({name:'豆豆'},{$max:{age:20}})
+  5,$min  指定某个域的值如果大于该值,则修改为该值,小于则不变.
+
+二,数组修改器
+  1,$push  向数组中添加一项
+    例:向score中添加40
+      db.class1.updateOne({name:'大胆'},{$push:{score:40}})
+  2,$pushAll  向数组中添加多项
+    db.class1.updateOne({name:'豆豆'},{$pushAll:{score:[10,20,30]}})
+  3,$pull  :从数组中删除一个值
+    db.class1.updateOne({name:'大胆'},{$pull:{score:40}})
+  4,$pullAll  同时删除数组中多个值
+    db.class1.updateOne({name:'球球'},{$pullAll:{score:[66,70]}})
+  5,$pop  弹出数组中一项(1表示最后一项,-1表示第一项)
+    例:
+     db.class1.updateOne({name:'蛋蛋'},{$pop:{score:-1}})
+  6,$addToSet   向数组中添加一项,不能和已有的值重复
+    db.class1.update({name:'球球'},{$addToSet:{score:80}})
+  7,$each   对多个值逐一操作
+    例:使用each添加60,70到数组
+    db.class1.updateOne({name:'大胆'},{$pull:{score:{$each:[60,70]}}})
+  8,$position  指定位置插入,配合each使用
+    例:在1号位置插入80这个值
+    db.class1.update({name:'大胆'},{$push:{score:{$each:[80],$position:1}}})
+  9,$sort  个数组排序,搭配each使用
+    例: 将红红的的score数组按照降序排序
+    db.class1.update({name:'红红'},{$push:{score:{$each:[],$sort:-1}}})
+
+三,删除文档
+  1,格式:
+    db.collection.deleteOne(query)
+  2,删除函数使用
+    1,deleteOne(query)
+      功能:删除第一个符合条件的文档
+      参数:筛选条件,用法和之前一样
+      例:db.class0.deleteOne({sex:'m'})
+    
+    2,deleteMany(query)
+      功能:同时删除所有符合条件的文档
+      参数:筛选条件
+      例:删除所有不存在sex域的文档
+        db.class0.deleteMany({sex:{$exists:false}})
+    3,remove(query,justOne)
+      功能:删除文档
+      参数:query  筛选条件
+          justOne 默认false,功能同deleteMany
+                  true,功能同deleteOne
+    4,findOneAndDelete(query)
+      功能:查找一个文档并删除
+      参数:query  筛选条件
+      返回:显示查找到的文档
+      例:查找年龄为18的第一条文档并删除
+      db.class0.findOneAndDelete({age:18})
+四,一些数据类型:
+  1,时间类型:
+    1)获取当前时间:
+      ①,new Date()自动生成当前时间
+        db.class2.insertOne(book:'python入门',date:new Date())
+      ② Date()  获取计算机时间生成字符串
+        db.class2.insertOne({book:'python精通',date:Date()})
+
+    2)时间函数
+      ISODate()
+      功能:将指定时间转换为mongodb存储时间
+      参数:默认为当前ISO时间
+          通过字符串指定时间
+          '2019-01-01 11:11:11'
+          '20190101 11:11:11'
+          '20190101'
+      例:db.class2.insertOne({book:'python精通',date:ISODate('20190109 19:19:19')})
+
+    3)时间戳
+      valueOf()
+      功能:根据标准时间生成时间戳
+      db.class2.insertOne({book:'python实践',date:ISODate().valueOf()})
+  2,Null类型
+    ①值:null
+    ②含义: 表示某个域的值为空
+           db.class2.insertOne({book:'python理论',price:null})
+           在表达语句中表示不存在
+  3,Object类型
+    1)定义:文档中某个域的值为文档,则该文档称为object数据,即对象类型
+    2)使用方法:当使用内部文档查询某个域的值时,需要使用'外部域.内部域'的格式获取,
+              此时该格式需要用引号标记为字符串
+      例:db.class3.find({'book.title':'天龙八部'},{_id:0})
+        db.class3.update({'book.title':'茶馆'},{$set:{'book.price':40}})
+  4,数组下标直接引用方法:
+    在使用数组时,可以通过'数组域.下标'的方法获取具体的某一项值
+    例:
+    db.class1.find({'score.0':{$gt:90}},{_id:0})
+    db.class1.update({name:'丁丁'},{$set:{'score.1':85}})
+
+五,索引操作:
+  1,定义:索引是建立文档所在位置的查找清单,使用索引可以方便快速查找
+       减少遍历次数,提高查找效率
+  2,索引约束:
+       ①索引本身也占据空间,所以数据量很少时,没必要创建索引消耗
+       ②索引表需要根据数据的修改及时变更,此时会降低数据增删改的效率,
+         因此当数据表数据库操作为大量的写操作而不是查找操作时不必创建索引.
+  3,创建索引:
+    ①db.collection.createIndex()
+      功能:创建索引
+      参数:索引域 和 索引选项
+      db.class0.createIndex({name:1})
+
+      _id域会由系统自动创建索引,且不能删除
+      1,表示正向索引,-1表示逆向索引
+
+    ②getIndexes()
+      功能:查看一个集合中的索引
+
+    ③自定义索引名称
+      通过第二个参数选项定义索引名称
+      例:
+      db.class0.createIndex({age:-1},{name:'Age'})
+    ④其他索引创建方法
+      ensureIndex()
+      功能:创建索引
+      参数:同createIndex()
+
+      createIndexes([{},{}])
+      功能:同时创建多个索引
+      参数:数组中存入多个索引键值对
+  4,删除索引
+    ①db.collection.dropIndex()
+      功能:删除一个索引
+      参数:索引名称或者键值对
+      db.class0.dropIndex({name:1})
+      db.class0.dropIndex('Age')
+    ②dropIndexes()
+      功能:删除集合中所有索引(不会删除_id)
+  5,其他类型索引
+    ①复合索引:根据多个域创建一个索引
+      db.class0.createIndex({name:1,age:1})
+    ②子文档/数组索引
+      如果对某个域创建索引,该域的值为子文档或者数组,则子文档或者数组中某一项查询也是索引查询
+      db.class3.find({'book.title':'天龙八部'},{_id:0})
+    ③唯一索引:要求创建索引的域不能有重复值
+      db.class0.createIndex({age:1},{unique:true})
+    ④稀疏索引
+      如果创建索引时,某些文档不存在指定索引域,则忽略这些文档
+      例:适用于部分文档不存在age域的情况
+      db.class0.createIndex({age:1},{sparse:true})
+六,聚合函数
+  1,聚合:对文档进行数据整理和统计
+  2,聚合函数:
+    db.collection.aggregate()
+    功能:完成集合操作,获取操作数据
+    参数:聚合条件,配合聚合操作符使用
+  3,聚合操作符
+    ①$group  分组聚合  需要配合一定的统计操作符
+        
+        统计求和:$sum
+        例:按性别分组,统计每组人数
+        db.class0.aggregate({$group:{_id:'$sex',num:{$sum:1}}})
+        按性别分组,统计男女各自年龄和
+        db.class0.aggregate({$group:{_id:'$sex',sum:{$sum:'$age'}}})
+        
+        求平均数:$avg
+        例:求男女平均年龄
+        db.class0.aggregate({$group:{_id:'$sex',avg:{$avg:'$age'}}})
+
+        求最大或最小值: $max  /  $min
+        例:求男女各自最大年龄
+        db.class0.aggregate({$group:{_id:'$sex',max:{$max:'$age'}}})
+
+        求第一个或最后一个值:  $first  /  $last
+        db.class0.aggregate({$group:{_id:'$sex',first:{$last:'$age'}}})
+
+    ② $project  用于获取集合指定域的文档数据
+      $project 值的写法类似于find函数的field参数
+      db.class.aggregate({$project:{_id:0,Name:'$name'}})
+
+作业:1,完成银行系统中的删除修改练习
+    2,复习网络,进程线程使用
+    3,操作符和函数的使用

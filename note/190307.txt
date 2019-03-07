@@ -1,0 +1,48 @@
+GIT 代码管理工具
+
+一,关于GIT
+  1,定义:git是一个开源的分布式版本控制系统,用于高效的管理大小项目和文件.
+  2,代码管理工具:git svn(Windows)
+    ①防止代码丢失,做备份
+    ②代码版本管控,通过设置节点在多个版本间切换
+    ③建立分支各自开发互不影响,方便合并
+    ④多人协同,方便代码的共享传输
+  3,git特点:
+    ①GIT是开源的,多在*nix下使用,可以管理各种文件.
+    ②GIT是分布式的管理工具(SVN是集中式)
+    ③GIT每台主机都有完整代码,数据安全,分享速度快
+    ④GIT拥有更好的分支支持,方便多人协作
+  4,GIT安装:
+    sudo apt-get install git
+二,GIT使用
+  1,概念
+    ①工作区:项目所在的操作目录,项目操作的区域
+    ②暂存区:用来记录工作区的工作(修改)内容
+    ③仓库区:用于将记录的内容备份
+    ④远程仓库:远程主机上的GIT仓库
+  2,git的初始化配置
+    命令:git config
+     ①配置系统所有客户: git config --system[选项]
+        配置文件位置:/etc/gitconfig
+     ②配置当前用户: git config --global[选项]
+       配置文件:~/.gitconfig
+     ③配置当前项目: git config [选项]
+       配置文件:项目目录:/.git/config
+       要求必须在项目目录下执行
+    
+    例:
+    配置用户名:
+    sudo git config --system user.name lhc
+    配置邮箱:
+    git config --global user.email 576478584@qq.com
+    配置编译器:
+    git config core.editor vscode
+    查看项目配置信息
+    git config --list
+  3,GIT基本操作
+    ①初始化仓库  git init  
+      意义:将某个项目目录变为git操作目录,生成git本地仓库
+          该目录即可使用git进行管理
+    ②查看分支状态: git status
+      说明:初始默认工作分支为master,当工作区和仓库不一致时,会有相应的提示信息
+    ③将工作区内容记录到暂存区: git add(files)

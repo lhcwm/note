@@ -1,0 +1,198 @@
+MongoDB
+一,基础概念:
+  1,数据:能够输入到计算机中并被识别处理的信息集合
+  2,数据结构:研究一个数据集合中数据之间关系的学科
+  3,数据库:按照数据结构,存储管理数据的仓库.数据仓库是在数据库管理系统管理控制下在一定介质中构建的.
+  4,数据库管理系统:数据库管理软件,用于建立维护数据库
+  5,数据库系统:由数据库和数据库管理系统等构成的开发工具集合
+
+二,关系型数据库 or 非关系型数据库(Nosql)
+  1,关系型数据库:采用关系模型(二维表)来组织数据结构的数据库
+    1,常见关系型数据库:Oracle DB2 SQLServer  Mysql  SQLite(标准库,小型的)
+    2,优点:逻辑清晰,容易理解,结够类似常见的表格
+          使用SQL语句操作,技术成熟,使用方便
+          数据一致性高,完整性好
+          关系型数据库比较成熟,可以使用一些复杂操作
+      缺点:每次操作需要专门SQL语句解析,速度较慢
+          关系型数据库内部往往进行加锁处理,也影响了处理速度
+          不能很好的处理海量数据高并发需求,读写能力差
+  2,非关系型数据库(Nosql--not only sql)
+    1,常见非关系型数据库:
+      键值型数据库:Redis
+      列存储数据库:HBase
+      文档型数据库:MongoDB CouchDB
+      图形型数据库:Graph
+    2,优点:读写速度快,可以更好应对并发处理需求
+          使用灵活多样,容易扩展
+      缺点:没有sql那样统一的语句操作
+          技术成熟度较差,缺少一些复杂操作
+    3,应用场景:
+      1,对数据格式一致性要求不严格
+      2,对数据处理速度特别是海量数据并发请求的情况
+      3,某些特定场景,如,需要较强的扩展,需要数据库作为缓存等
+
+要求:关系型数据库与非关系型数据库的区别特点
+
+三,MongoDB数据库
+  1,MongoDB特点:
+    ①非关系型数据库中 文档型数据库
+    ②开源数据库,使用广泛,更新较快
+    ③由c++编写的数据库管理系统
+    ④支持丰富的存储类型和数据操作
+    ⑤有众多编程语言提供操作接口
+    ⑥方便扩展和部署,使用方便
+  2,安装:
+    Linux: sudo apt-get install mongodb
+    Mac OS:brew install mongodb
+    Windows:官网安装www.mongodb.com--> try free--> Server --> 选择版本 --> 下载
+    
+    Linux安装目录: 
+    安装位置:/var/lib/mongodb
+    配置文件:/etc/mongodb.conf
+    命令集:/usr/bin
+
+四,MongoDB命令
+  1,mongod配置mongodb基本信息
+    ①mongod  -h  查看命令帮助
+    ②mongod --dbpath [dir] 设置数据库存储位置
+    ③mongod --port 设置数据库的端口,默认27017
+  2,mongo:进入mongo shell界面
+    1,mongo 进入
+    2,ctrl + c 或 quit() 退出,
+
+五,MongoDB数据库的数据结构
+  1,数据组织结构: 键值对 --> 文档 -->集合 --> 数据库
+  2,基本概念对比:
+     mysql       mongodb       含义
+    database   database      数据库
+     table     collection    表/集合
+    column     field        字段/域
+    row       document      记录/文档
+    index     index           索引
+六,数据库操作
+  1, 创建数据库 use [database]
+     use实际为选择使用那个数据库,当这个数据库不存在时,会自动创建
+     使用use创建数据库不会立即建立起来,而是需要真正插入数据时才会产生
+
+  2,查看系统中数据库: show dbs
+
+  3,数据库命名规则:
+    ①使用utf-8字符
+    ②不能含有 空格 . / \ \0 字符
+    ③不能超过64字节   
+    ④不要和系统数据库重名
+
+  4,全局变量 db:代表当前正在使用的数据库
+    当不选择任何数据库时, db 为 'test'
+
+  5,数据库的删除
+    db.dropDatabase()
+  6,数据库的备份和恢复
+    1.备份命令 (mongo命令,在终端执行)
+      mongodump -h host -d database -o path
+      例:
+      将本机下stu数据库备份到dir目录中
+      mongodump -h 127.0.0.1 -d stu -o dir
+    2,恢复命令(mongo命令,在终端执行)
+      mongorestore -h host:port -d database file
+      例:
+      将dir/stu备份文件内容恢复到本机student数据库
+      mongorestore -h 127.0.0.1:27017 -d student dir/stu
+
+  7,数据库监控命令
+    1,查看数据库运行状态:mongostat  
+      insert query update delete  每秒曾查改删的次数
+      command  每秒执行mongo命令操作次数
+      flushes  和磁盘交互情况
+      vsize res:使用虚拟内存和物理内存的情况
+      time  运行时间
+
+    2,监控数据库中数据表读写情况
+      mongotop 
+      ns  数据集合
+      total  每秒读写时长
+      read   每秒读时长
+      write  每秒写时长
+七,集合操作
+  1,创建集合:①db.createCollection(collectionName)
+            ②当插入数据时,如果指定集合不存在则自动创建
+            例:
+            如果class2不存在则自动创建
+            db.class2.insert({'name':'宝宝','age':4})
+
+  2,查看数据库集合:show collections
+  
+  3,集合命名规则:
+    ①使用utf-8字符
+    ②不能含有\0字符
+    ③不要以system.开头,这是系统集合默认开头
+    ④不要和关键字重名
+  4,删除集合
+    db.collection.drop()
+    例:
+    删除class集合
+    db.class.drop()
+  5,集合重命名
+    db.collection.renameCollection('newName')
+    例:
+    将class2重命名为class0
+    db.class2.renameCollection('class0')
+
+八,文档
+  1,定义:mongodb数据库中基本的数据组织单元
+        文档由多个键值对组成,每个键值对表达一个数据项
+        mongodb文档属于bson类型数据
+  2,文档键值对
+    特点:文档键值对也是无序的
+        通过键取其中的值
+        键不能重复
+    键:即文档的域名,表达数据的基本信息.
+      命名规定:使用utf8字符串
+              不能含有\0
+    值:即数据库中存储的数据
+       类型             值
+       整形(int)       整数
+       浮点型(double)   小数
+       布尔(boolean)   true false
+       数组(Array)     [1,2]类似列表
+       字符串(String)   'abcd'  utf-8字符串
+       日期时间(Date)    日期和时间
+       Binary Data    二进制格式类型
+       Null           null
+       对象(Object)    内部文档
+       ObjectId        Id对象
+
+  3,ObjectId:
+    插入文档时,mongodb会自动为文档生成的一个主键id值,保证不会和其它文档id值重复
+    例:
+    '_id':ObjectId("5c763602e7c5fa22a7f1a20a")
+    _id  为自动生成的域名,表示主键域
+    ObjectId值由24位16进制码通过一定算法得到的
+
+  4,集合中的文档设计
+    ①一个集合中的文档尽量表达相同的数据内容
+    ②集合中文档层次不宜嵌套过多
+    ③在集合中文档使用比较自由,原则上文档结构可以各不相同
+
+九,数据基本操作
+  1,插入文档
+    ①插入单个文档:  db.collection.insertOne(doc)
+              例:向class0中插入一个文档
+                 db.class0.insertOne({'name':'jason','age':22,'sex':'m'})
+      特点:数据操作时,键可以不加引号,默认为utf8字符串
+          文档插入集合是一个有序行为
+          可以自己设定文档的_id域值,但是_id不能重复
+    
+    ②插入多条文档:  db.collection.insertMany([doc,doc...])
+      例:向class0中插入多个文档
+      db.class0.insertMany([{name:'Tom',age:22,sex:'m'},{name:'liu',age:44,sex:'m'}])
+    ③综合:官方已不推荐
+      db.collection.insert({})
+      插入一个或多个均可
+    ④save 保存文档
+     db.collection.save()
+     说明:参数用法与insert()相同,但是当_id重复时会覆盖原有文档,如果不重复,则插入文档
+
+作业:能够回答关系型数据库库和非关系型数据库的区别
+    熟练数据库的创建,集合操作,文档插入
+    使用mongodb完成mysql数据库练习中数据库数据表的创建添加

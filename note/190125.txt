@@ -1,0 +1,79 @@
+1,可迭代对象
+ 1,代码特征:重写__iter__(),返回可迭代对象
+            重写__next__()获取下一个元素
+
+ 2,__next__(),实现迭代器协议
+   如果有下一个元素,则返回
+   如果没有下一个元素,则抛出StopIteration异常                       <深入浅出设计模式> 
+
+2,运算符重载:
+  1,在自定义类中,重写某些方法,重写后就可以对对象进行某些运算符操作
+  2,目的:
+    1,简化对象操作.
+    例: C = 'abc'+'123'
+        d = '123'>'456'
+    2,代码清晰直观
+    3,可以在类中自定义运算规则
+   注:运算重载不要改变原有意义
+
+ 3,算数运算符重载
+   重写方法后,支持+-*/ //  % **
+   重载方法和运算符的对应关系
+   __add__(self,rhs)  self+rhs
+   __sub__(self,rhs)  self-rhs
+   __mul__(self,rhs)  self*rhs
+   __trusdiv__(self,rhs)  self/rhs
+   __floordiv__(self,rhs)  self//rhs
+   __mod__(self,rhs)  self%rhs
+   __pow__(self,rhs)  self**rhs
+
+ 4,反向算数运算符重载
+  在正向运算符重载的函数前加r
+  如:__radd__()
+  支持:2+obj 对象在操作符的右边
+
+ 5,符合运算操作符:
+   在正向运算符重载 的方法前加i前缀
+   如__iadd__
+   重载运算符后,执行复合表达式
+   obj+=2 先查找__iadd__(),如果没有在查找__add__()
+   若果再没有,报TypeError类型错误.
+
+ 6,比较运算符
+   1,重写方法和运算符的对照关系
+     __lt__(self,rhs)  self<rhs
+     __gt__(self,rhs)  self>rhs
+     __eq__(self,rhs)  self==rhs
+     __ne__(self,rhs)  self!=rhs
+     __ge__(self,rhs)  self>=rhs
+     __le__(self,rhs)  self<=rhs
+   注: 比较规则
+     >: 首先找__gt__(),没有找__lt__(),如果lt也没有,则报错
+     <: 同理  >= ,<= 同理,  
+     ==: 先找__eq__(),不存在则判断ID
+     !=: 先找__ne__(),不存在找__eq__(),不存在则判断ID.
+
+ 7,一元运算符;
+   带一个操作数的操作符
+   __neg__(self)  -self负号运算
+   __pos__(self)  +self正号运算
+   __invert__(self)  ~self取反运算
+
+  作用:重写上述方法,支持对象如下操作:
+       -obj   +obj   ~obj
+
+ 8,in/not in
+   只需重载__contains__(self,e)
+   in运算,直接调用   not in 取反
+   示例:
+       def __contains__(self,e):
+          return e in self.data
+ 9,索引运算符重载
+   __getitem__(self,i)        self[i]
+   __setitem__(self,i,value)  self[i]=value
+   __delitem__(self,i)        del self[i]
+     
+3.实例的内置属性
+  1,__dict__属性:绑定实例自身的变量字典
+            包括父类创建的属性和私有属性
+  2,__class__属性:绑定的是创建该对象的类

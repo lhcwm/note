@@ -1,0 +1,144 @@
+四,TCP套接字数据传输特点
+   1,TCP连接中当一端退出,另一端如果阻塞在recv,此时recv会立即返回一个空字串
+   2,TCP连接中如果一点已经不存在,仍然试图通过send发送则会产生broken pipe error
+   3,一个监听套接字可以同时连接多个客户端,也能重复被连接
+   4,网络收发缓冲区:
+     a,网络缓冲区有效的协调了消息的收发速度
+     b,send和recv实际是向缓冲区发送接收消息,当缓冲区不为空,recv就不会阻塞
+   5,tcp粘包
+     ①产生原因:TCP以字节流方式传输,没有消息边界.
+              多次发送的消息一次接受,此时就会产生粘包
+     ②影响:如果每次发送的内容是一个独立的含义,需要接收端独立解析,此时粘包会有影响
+     ③处理:a.人为添加消息边界
+           b.控制发送速度
+
+五,UDP套接字编程
+  1,服务端流程:
+
+    1,创建数据报套接字
+      sockfd=socket(AF_INET,SOCK_DGRAM)
+
+    2,绑定地址
+      sockfd.bind(('172.40.71.129',6666))
+
+    3,消息收发
+      data,addr = sockfd.recvfrom(buffersize)
+      功能:接受UDP消息
+      参数:每次最多接受多少字节数
+      返回值:data  接收到的消息
+            addr  消息发送方地址
+
+      n=sockfd.sendto(data,addr)
+      功能:发送UDP消息
+      参数:data  发送的消息内容
+          addr   目的地址
+      返回值:发送的字节数
+
+    4,关闭套接字
+      sockfd.close()
+      
+  2,客户端流程
+    1,创建套接字
+    2,收发消息
+    3,关闭套接字
+
+总结:TCP套接字和udp套接字编程区别
+  1,流式套接字是以字节流方式传输数据,数据报套接字以数据报形式传输
+  2,TCP套接字会有粘包,udp套接字有消息边界不会粘包
+  3,tcp套接字保证消息的完整性,udp套接字则不能
+  4,TCP套接字依赖listen accept建立连接才能收发消息,udp套接字则不需要
+  5,TCP套接字使用send recv 收发消息,udp套接字使用sendto recvfrom
+
+六,socket模块方法和socket套接字属性
+  1.部分socket模块方法
+    gethostname()   获取计算机名
+    gethostbyname('www.baidu.com')  获取主机的IP地址
+    getservbyname('mysql')  根据服务名称获取端口号
+    getservbyport(3306)   根据端口号获取服务名称
+    inet_aton('192.168.2.1')  将ip地址转化成bytes格式字节串
+    inet_ntoa()   将bytes格式字节串转化成IP地址
+    
+  2.套接字属性
+    1,sockfd.type  套接字类型
+    2,sockfd.family  套接字地址类型
+    3,sockfd.getsockname() 获取套接字绑定地址
+    4,sockfd.fileno()  获取套接字的文件描述符
+      文件描述符:系统中每一个IO操作都会分配一个整数作为编号,
+               该整数即这个IO操作的文件描述符
+      特点:文件描述符是系统用来区分处理IO的标志,不会重复
+    5,sockfd.getpeername() 获取连接套接字客户端地址
+      例:
+      connfd,addr = sockfd.accept()
+      print(connfd.getpeername())   #connfd.getpeername()就相当于addr
+
+    6,sockfd.setsockopt(level,option,value)
+      功能:设置套接字选项
+      参数:level  选项类别
+          option 具体选项内容
+          value  选项值
+      示例:
+      sockfd.setsockopt(SQL_SOCKET,SO_REUSEADDR,1)  设置为端口可以立即重用
+   
+    7,sockfd.getsockopt(level,option)
+      获取套接字选项值
+
+七,UDP套接字广播
+   定义:一端发送多点接收
+   广播地址:每个网络的最大地址为发送广播地址,向该地址发送,
+           则网段内所有主机都能接收
+
+   示例: from socket import *
+        s=socket(AF_INET,SOCK_DGRAM)
+        #设置可以发送接收广播
+        s.setsockopt(SOL_SOCKET,SO_BROADCAST,1)
+        #选择一个接收地址
+        s.bind(('0.0.0.0',9999))
+        while True:
+            try:
+                msg,addr=s.recvfrom(1024)
+                print('从%s接收到广播:%s'%(addr,msg.decode()))
+            except KeyboardInterrupt:
+                break
+            except Exception as e:
+                print(e)
+
+        s.close()
+
+八,tcp套接字之HTTP传输
+   1,Http协议  (超文本传输协议)
+     1,用途:网页获取,数据的传输
+     2,特点:1,应用层协议,传输层使用TCP传输
+           2,简单灵活,很多语言都有http专门接口
+           3,无状态,协议不记录传输内容
+           4,HTTP1.1支持持久连接,丰富了请求类型
+     3,网页请求过程
+       1,客户端(浏览器)通过tcp传输,发送http请求给服务器
+       2,服务端接收到http请求后进行解析
+       3,服务器处理请求内容,组织响应内容
+       4,服务器将响应内容以http响应格式发送给浏览器
+       5,浏览器接收到响应内容,解析展示
+
+     4,HTTP请求(request):
+       1,请求行:具体的请求类别和请求内容
+         GET          /       HTTP/1.1
+         请求类别   请求内容     协议版本
+       
+         请求类别:每个请求类别表示要做不同的事情
+                GET:获取网络资源
+                POST:提交一定的信息,得到反馈
+                HEAD:只获取网络资源的响应头
+                PUT:更新服务器资源
+                DELETE:删除服务器资源
+                ...
+
+       2,请求头:对请求的进一步解释和描述
+       3,空行
+       4,请求体:请求参数或者提交内容
+
+
+
+作业:1,使用TCP完成一个文件的传输,将文件从客户端发送给服务端.要求文件可以是文本
+      也可以是图片
+    2,记住HTTP请求格式和请求行每部分含义,了解请求类别
+    3,能够自己写出tcp udp的基础代码
+
