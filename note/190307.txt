@@ -55,3 +55,47 @@ GIT 代码管理工具
 
     ⑤将文件同步到本地仓库区: git commit -m [message]
       说明:每次同步都需要添加同步信息,commit操作只能同步暂存区已经记录的内容
+    ⑥查看commit日志:
+     git log                    全部日志信息  
+     git log --pretty=oneline   简易日志信息
+    ⑦文件比较: git diff [file]
+      说明:用于比较工作区文件和仓库文件差异
+    ⑧放弃工作区修改: git checkout -- [file]
+    ⑨从仓库恢复文件: git checkout [file]
+    ⑩移动或删除文件并提交暂存
+      git mv [file]  移动文件
+      git rm [file]  删除文件
+  4,版本控制命令
+    ①退回到上一个commit节点: git reset --hard HEAD^
+      说明:HEAD是commit指针,一个^表示后退一个commit
+    ②去往指定的commit操作节点:
+      git reset --hard [commit_id]
+    ③查看全部历史操作: git reflog
+      说明:利用该操作可以使用reset去往任意历史位置
+    ④标签创建: git tag [名称] -m [message]
+      标签:在工作重要位置添加的快照,保存当时的工作状态,一般用于版本迭代等
+      注意:标签的message信息可以不加,但是最好添加
+
+      将标签添加到指定的commit_id:
+      git tag [名称] [commit_id] -m [message]
+
+    ⑤查看标签
+      git tag 查看标签列表
+      git show [tag_name] 查看标签具体信息
+
+    ⑥去往某个标签节点: git reset --hard [tag]
+    ⑦删除标签: git tag -d [tag]
+
+  5,临时工作区
+    ①创建临时保存工作区:git stash 
+      说明:将工作区未提交的修改封存,让工作区回到修改前状态
+    ②查看临时工作区列表: git stash list
+      说明:最新的工作区记录为stash{0}依次排列
+    ③应用某个保存的工作区: git stash apply [stash]
+      例: git stash apply stash@{0}
+    ④删除工作区: 
+      git stash drop [stash]  删除某一个工作区
+      git stash clear   删除所有工作区
+
+作业:练习git命令
+    登录github.com网站注册一个账号
