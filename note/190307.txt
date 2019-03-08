@@ -181,3 +181,21 @@ GIT 代码管理工具
     1,通过右上角search查找想要的项目
     2,根据查找结果选择某个项目进入项目页面
     3,右上角复制地址git clone 或者直接download
+  4.创建新的仓库
+    1,右上角+下拉选择new repository
+    2,填写基本仓库看信息后create
+    3,根据提供的仓库看地址进行连接后即可上传内容
+  5,删除仓库
+    1,选择想要删除的仓库
+    2,右上角setting,下拉最下面,点击delete
+    3,正确输入仓库名删除
+  6,连接方式选择
+    1,使用https方式连接github后,每次向github上传内容都需要输入github用户名和密码
+    2,使用ssh方式连接github后,每次向github上传内容不需要用户名和密码,但是需要
+      提前将固定的主机设置为信任,即添加ssh秘钥
+      设置方法:1,在Linux下使用ssh-keygen命令生成秘钥
+              秘钥默认存放在/home/terena/.ssh/路径下
+              2,赋值该路径下的id_rsa.pub内容
+              3,github账号 右上角下拉选择setting
+              左侧ssh and GPG keys,new ssh key,
+              添加复制的秘钥内容
