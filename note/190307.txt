@@ -149,6 +149,9 @@ GIT 代码管理工具
       git push -u origin master
       注意:-u表示建立对应分支自动关联,一般首次向远程推送某个分支时使用
            git branch -a 可以查看连接的远程分支
+
+      git push origin :[branch]可以删除远程分支
+
     4,获取远程仓库项目
       git clone tarena@172.40.91.185:/home/tarena/gitrepo/tedu.git
       注意:通过clone获取的远程项目到本地直接就是一个git本地仓库
@@ -157,3 +160,24 @@ GIT 代码管理工具
       注意:clone后本地项目与远程已经建立关联,pull可以直接拉取
           代码到对应分支
     6,从远程获取最新内容到本地:git fetch
+      注意:pull是直接将远程分支内容拉取到本地并和当前工作分支进行合并;
+          fetch是将远程分支内容拉取到本地显示的对应远程分支中.
+          如果想和当前分支合并,需要进行merge操作.
+          
+          git fetch origin master:tmp 可以将远程master分支内容
+          拉取到本地的新建分支tmp中
+    
+    7,推送其他内容
+      推行标签:git push origin [tag]
+      推送版本落后于远程版本时:git push --force origin
+
+三,github使用:
+  1,介绍:github是一个开源项目社区网站,拥有全球最多的开源项目.开发者可以注册网站在
+        github上建立自己的项目仓库
+  2,网址:github.com
+    代码管理工具:git
+
+  3,获取开源项目
+    1,通过右上角search查找想要的项目
+    2,根据查找结果选择某个项目进入项目页面
+    3,右上角复制地址git clone 或者直接download
