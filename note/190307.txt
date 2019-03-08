@@ -105,4 +105,18 @@ GIT 代码管理工具
   3,分支操作命令:
     ①查看分支情况:git branch
       说明:前面带*的表示当前正在工作的分支
+    
     ②创建新的分支:git branch [branch_name]
+      注意:基于某个分支创建新分支的时候原有分支最好是'干净的'
+    
+    ③切换工作分支: git checkout [branch_name]
+      注意:git checkout -b [branch_name]可以创建并切换到
+          新的分支,同时完成①②
+    
+    ④合并分支:git merge [branch]
+      注意:表示将某个当前分支建立的分支,合并过来
+          合并分支过程中可能会产生冲突,需要手动解决
+          在分支操作中尽量添加新的模块,不要修改原有代码内容
+    ⑤删除分支: git branch -d [branch]
+      注意:没有被合并的分支不能使用该命令删除,
+          如果强制删除使用-D选项: git branch -D [branch]
