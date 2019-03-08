@@ -120,3 +120,40 @@ GIT 代码管理工具
     ⑤删除分支: git branch -d [branch]
       注意:没有被合并的分支不能使用该命令删除,
           如果强制删除使用-D选项: git branch -D [branch]
+
+二,远程仓库
+  1,远程仓库:远程主机上的git仓库.实际上git是分布式结构,每台主机
+            上git仓库结构相似,只是把其他主机上的git仓库称为远程仓库
+  2,共享仓库:git分布式结构衍生了很多工作模式,共享仓库是其中比较常用的模式之一
+           普通隐藏的.git仓库不能被其他主机获取代码,共享仓库即可以将git项目共享的仓库
+  3,创建自己的共享库
+    ①选择共享库目录,设置目录属主
+      mkdir 目录名
+     chown tarena:tarena 目录名
+    ②初始化该目录为git仓库,设置bare属性
+      cd 目录
+      git init --bare jason.git
+      注:jason为共享项目名称,.git为习惯后缀
+    ③将配置git目录设置为和共享仓库目录相同的属性
+      chown -R tarena:tarena jason.git
+  4,添加项目到共享仓库
+    1,创建共享仓库连接
+      git remote add origin tarena@127.0.0.1:/home/tarena/LHC/jason.git
+      注意:①该操作要在本地的一个git项目中执行
+          ②与远程主机的连接默认使用SSH方法
+          ③origin是给远程主机起的名字
+
+    2,删除远程主机:git remote rm [origin]
+      注意:连接多个远程主机时,远程主机名是不能重复的
+    3,将本地分支推送到远程共享仓库
+      git push -u origin master
+      注意:-u表示建立对应分支自动关联,一般首次向远程推送某个分支时使用
+           git branch -a 可以查看连接的远程分支
+    4,获取远程仓库项目
+      git clone tarena@172.40.91.185:/home/tarena/gitrepo/tedu.git
+      注意:通过clone获取的远程项目到本地直接就是一个git本地仓库
+          并且与远程建立好了连接
+    5,从远程获取最新代码:git pull
+      注意:clone后本地项目与远程已经建立关联,pull可以直接拉取
+          代码到对应分支
+    6,从远程获取最新内容到本地:git fetch
