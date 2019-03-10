@@ -83,15 +83,15 @@ class HTTPServer(object):
 
     # 给客户端返回响应
     def response(self,connfd,data):
-        data = json.loads(data)
         # 根据情况组织响应
-        if data['status']=='200':
+        print(data)
+        if data!='404':
             response_headlers = 'HTTP/1.1 200 OK\r\n'
 
-        elif data['status']=='404':
+        else:
             response_headlers = 'HTTP/1.1 404 Not Found\r\n'
         response_headlers += '\r\n'
-        response_body = data['data']
+        response_body = data
         response = response_headlers + response_body
         connfd.send(response.encode())
         connfd.close()
