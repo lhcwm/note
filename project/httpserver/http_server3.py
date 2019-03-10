@@ -23,7 +23,7 @@ def connect_frame(**env):
         return
     # 将请求发送frame
     s.send(json.dumps(env).encode())
-    data = s.recv(4096).decode()
+    data = s.recv(4096*10).decode()
     return data 
 
 

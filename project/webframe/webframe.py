@@ -70,13 +70,17 @@ class Application(object):
         try:
             f=open(filename)
         except IOError:
+            print('网页打开失败')
             return
         data=f.read()
         f.close()
         return data
 
-    def get_data(self):
-        pass
+    def get_data(self,path_info):
+        for url,func in urls:
+            if path_info == url:
+                return func()
+        return '404'
 
 
 
