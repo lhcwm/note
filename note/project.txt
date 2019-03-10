@@ -55,3 +55,37 @@
   3,项目管理:project
   4,代码管理:git  svn
   
+-------------------------------
+一,HTTPServer v3.0
+  1,功能:①httpserver部分:
+          获取http请求
+          解析HTTP请求
+          将请求发送给webframe
+          从webframe接受数据信息
+          将数据信息组织为response发送给客户端
+        ②WebFrame部分
+          从httpServer获取具体请求
+          根据请求进行逻辑或者数据处理
+          将数据资源发送给httpserver
+  2,升级点:
+    ①httpserver与应用程序分离,各自独立
+    ②独立开发,降低相互干扰,采用各自配置的模式
+    ③在后端应用程序中优化了数据的处理模型
+    
+  3,HTTPServer
+
+cookie 1,#!/usr/bin/env python3   指定python的启动位置,  
+        当程序设置权限为可执行时,在终端启动无需写python3,可以直接写 ./程序
+
+       2,import json
+
+         json.dumps(dict)
+         功能:将python 字典转换为json字符串
+         参数:字典
+         返回值:转化后的json字符串
+
+         jason.loads(s)
+         功能:将json字符串转化为字典
+         参数:json字符串
+         返回值:转换后的字典
+
