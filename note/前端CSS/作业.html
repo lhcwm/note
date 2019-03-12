@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <h1>增加管理员</h1>
+    <form action='xxx.py' method="get" enctype="">
+        <table width='450px' height='330px'>
+            <tr>
+                <td width='50px'>姓名:</td>
+                <td><input type="text" name="username"></td>
+                <td width='150px'>10个字符以内</td>
+            </tr>
+            <tr>
+                <td>密码:</td>
+                <td><input type="password" name="passwd"></td>
+                <td>10个字符以内</td>
+            </tr>
+            <tr>
+                <td>性别:</td>
+                <td>
+                <input type="radio" name="sex" value="woman" id="w">
+                <label for="w">女士</label>
+                <input type="radio" name="sex" value="man" id="m">
+                <label for="m">男士</label>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td rowspan="2">角色:</td>
+                <td>
+                <input type="checkbox" name="manager" value="super">超级管理员
+                </td>
+                <td rowspan="2">至少选择一个角色</td>
+            </tr>
+            <tr>
+                <td>
+                <input type="checkbox" name="manager" value="bill">账单管理员
+                </td>
+            </tr>
+            <tr>
+                <td>头像:</td>
+                <td><input type="file" name="img"></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                <input type="submit" value="保存">
+                <input type="reset" value="重填">
+                </td>
+                <td></td>
+            </tr>
+            </table>
+    </form>
+</body>
+</html>
