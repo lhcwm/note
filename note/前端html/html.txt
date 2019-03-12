@@ -59,5 +59,75 @@
             3.推荐书写顺序thead tfoot tbody,不影响表格结构
               优化加载速度
               
-
   3,表单标签:
+    表单:结合表单控件收集用户信息并提交给服务器
+    语法:
+        <form>
+            表单控件
+        </form>
+    使用:
+        1,表单元素<form></form>负责最终发送数据
+          属性:
+            action  设置提交地址
+            method  设置数据提交方式,默认为get,可以设置为post
+                    get:数据以参数的形式拼接在url后面明文传输
+                    post:数据会被打包传输,可以传输二进制数据(图片,文件,音视频...)
+            enctype  设置数据编码类型,对应提交方式,默认为application/x-www-form-urlencoded
+                     如果涉及二进制数据提交,需要设置提交方式为post,编码类型为multipart/form-data
+        2,表单控件:(重点)
+          ①文本框和密码框
+                文本框: <input type="text" name="username" value="张三" maxlength="10">
+                密码框: <input type="password" name="passwd" placeholder="密码由数字字母组成">
+          ②单选钮和复选框
+            单选钮:
+                1,一组按钮的空间名称必须保持一致,能够实现单选功能
+                2,value属性必填,设置控件的值,最终发送给服务器
+                3,checked属性设置默认选中
+                例:
+                <input type="radio" name="gender" value="male" checked>男
+                <input type="radio" name="gender" value="female">女
+            复选框:
+                <input type="checkbox" name="hobby" value="music">音乐
+                <input type="checkbox" name="hobby" value="draw">画画
+            文本与按钮控件的绑定:label for id
+                <input type="checkbox" name="hobby" value="music" id="music">
+                <label for="music">音乐</label>
+                <input type="checkbox" name="hobby" value="draw" id='draw'>
+                <label for="draw">画画</label>
+
+          ③隐藏域和文件选择框
+            隐藏域:用户不需要了解,服务器端必需的数据可以放在隐藏域中传输,页面中对用户不可见
+                <input type="hidden" name="uid" value="001">
+            文件选择框:
+                <input type="file" name="uimg">
+        
+          ④下拉菜单
+            例:
+                选择城市:
+                <select name="city">
+                        <option value="beijing">北京</option>
+                        <option value="shenzhen" selected>深圳</option>
+                </select>
+
+          ⑤多行文本域
+             例:个人介绍:
+                <textarea name="userinfo"></textarea>
+
+          ⑥功能性按钮:
+            1,提交按钮:
+              点击提交,会将表单中的数据按照指定的方式和指定的地址发送给后台
+            2,重置按钮:
+              将表单数据还原至初始化状态
+            3,普通按钮:
+              需要结合JS自定义处理
+
+              例:     value用来设置按钮的显示文本
+                提交: <input type="submit" value="注册">
+                重置: <input type="reset" value="清空">
+                普通: <input type="button" value="点击">
+
+            4,按钮标签:
+              <button>显示文本</botton>
+              form外部的button标签为普通按钮,需要自定义JS处理事件
+              form内的button标签相当于提交按钮,将数据发给服务器
+              

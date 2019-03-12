@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <form action="login.py" method="get" enctype="">
+        <!-- 文本框和密码框 -->
+        <p>
+            <!-- 默认username=张三格式传输 -->
+            用户姓名:<input type="text" name="username" value="张三" maxlength="10">
+        </p>
+        <p>
+            用户密码:<input type="password" name="passwd" 
+            placeholder="密码由数字字母组成">
+        </p>
+        <p>
+            <!-- 单选钮和复选框 -->
+            用户性别:
+            <!-- 1,一组按钮的空间名称必须保持一致,能够实现单选功能
+                 2,value属性必填,设置控件的值,最终发送给服务器
+                 3,checked属性设置默认选中 -->
+            <input type="radio" name="gender" value="male" checked id="male">
+                <label for="male">男</label>
+            <input type="radio" name="gender" value="female" id="female">
+                <label for="female">女</label>
+        </p>
+        <p>
+            用户爱好:
+            <input type="checkbox" name="hobby" value="music" id="music">
+                <label for="music">音乐</label>
+            <input type="checkbox" name="hobby" value="draw" id='draw'>
+                <label for="draw">画画</label>
+            <input type="checkbox" name="hobby" value="dance" id="dance">
+                <label for="dance">跳舞</label>
+        </p>
+        <!-- 隐藏域和文件选择 -->
+        <input type="hidden" name="uid" value="001">
+        <p>
+            用户头像:
+            <input type="file" name="uimg">
+        </p>
+        <p>
+            <!-- 下拉菜单 -->
+            选择城市:
+            <select name="city">
+                    <option value="beijing">北京</option>
+                    <option value="shanghai">上海</option>
+                    <option value="guangzhou">广州</option>
+                    <option value="shenzhen" selected>深圳</option>
+            </select>
+        </p>
+        <p>
+            个人介绍:
+            <textarea name="userinfo"></textarea>
+        </p>
+        <p>
+            <!-- value用来设置按钮的显示文本 -->
+            <input type="submit" value="注册">
+            <input type="reset" value="清空">
+            <input type="button" value="点击">
+        </p>
+        <button>form内</button>
+    </form>
+    <button onclick="alert('按钮被单击')">form外</button>
+</body>
+</html>
