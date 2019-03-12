@@ -1,0 +1,130 @@
+
+二,IO
+  1,定义:在内存中存在数据交换的操作认为是IO操作
+    如:和终端交互:input print
+       和磁盘交互:read write 
+       和网络交互:recv  send
+
+  
+    IO密集型程序:在程序执行中有大量的IO操作,而cpu运算较少,消耗cpu较少
+               速度慢耗时长
+
+    计算密集型程序:程序运行中计算较多,IO操作少,cpu消耗多,执行速度快
+                几乎没有阻塞
+
+  2,IO分类:阻塞IO,非阻塞IO,IO多路复用,异步IO 等
+  3,阻塞IO:
+    ①定义:在执行IO操作时,如果执行条件不满足则阻塞.阻塞IO是IO的默认形态
+    ②效率:阻塞io是效率很低的一种IO,但是由于逻辑简单所以是默认的IO行为
+    ③阻塞情况:a.因为某种执行条件没有满足造成的函数阻塞
+               如:accept  input recv
+             b.处理IO的时间较长产生的阻塞状态
+               如,网络传输,大文件读写
+  4,非阻塞IO:
+    1,定义:通过修改IO属性行为,使原本阻塞的IO变为非阻塞的状态
+    2,设置套接字为非阻塞IO
+      sockfd.setblocking(bool)
+      功能;设置套接字为非阻塞IO
+      参数:默认为True,表示套接字IO阻塞,设置为false则套接字IO变为非阻塞
+    3,超时检测:设置一个最长等待时间,超过该时间后则不在阻塞等待
+         sockfd.settimeout(sec)
+         功能:设置套接字的超时时间
+         参数:设置的时间
+
+  5,IO多路复用
+    1,定义:同时监控多个IO事件,当哪个IO事件准备就绪就执行哪个IO事件,
+          以此形成可以同时处理多个IO订单行为,避免一个IO阻塞造成其他
+          IO均无法执行,挺高了IO 的执行效率
+    2,具体方案:
+      1,select方法: Windows Linux Unix
+      2,poll方法:Linux Unix
+      3,epoll方法:Linux 
+    
+    3,Python实现IO多路复用
+      import select
+
+三,Python实现IO多路复用
+  1,select方法:
+    rs,ws,xs=select(rlist,wlist,xlist[,timeout])
+    功能:监控IO事件,阻塞等待IO发生
+    参数:rlist  列表 存放关注的等待发生的IO事件
+        wlist  列表 存放关注的要主动处理的IO事件
+        xlist  列表 存放关注的出现异常要处理IO
+        timeout 超时时间
+    返回值:
+         rs:  列表  rlist中准备就绪的IO
+         ws:  列表  wlist中准备就绪的IO
+         xs:  列表  xlist中准备就绪的IO
+
+  2,select实现TCP服务
+    1,将关注的IO放入对应的监控类别列表
+    2,通过select函数进行监控
+    3,遍历select返回值列表,确定就绪IO事件
+    4,处理发生的IO事件
+
+    示例:
+    from select import select
+    from socket import *
+    #创建套接字作为关注的IO
+    s=socket()
+    s.setsockopt(SOL_SOCKET,SO_REUSEADDR,1)
+    s.bind(('0.0.0.0',8888))
+    s.listen(5)
+
+    #添加到关注列表
+    rlist=[s]
+    wlist=[]
+    xlist=[]
+
+    #监控关注的IO
+    while True:
+        rs,ws,xs=select(rlist,wlist,xlist)
+        #遍历返回值列表,确定就绪的IO
+        for r in rs:
+            #s就绪,有客户端请求连接
+            if r is s:
+                c,addr=r.accept()
+                print('connect from',addr)
+                # 将客户端连接套接字加入关注
+                rlist.append(c)
+            #表示某个客户端发消息则c就绪
+            else:
+                data=r.recv(1024)
+                if not data:
+                    rlist.remove(r)
+                    r.close()
+                    continue
+                print('receive:',data.decode())
+                # r.send(b'ok')
+                wlist.append(r)
+        for w in ws:
+            w.send(b'收到')
+            wlist.remove(w)
+
+  注意:1,wlist中如果存在IO事件,则select立即返回给ws
+      2,处理IO过程中不要出现死循环占有服务端的情况
+      3,IO多路复用消耗资源较少,效率较高
+
+四,位运算.
+  定义:将整数转换为二进制,按二进制位进行运算
+  预算符号: &  按位与    与假则假
+          |   按位或    或真为真
+          ^   按位异或  相同为0不同为1
+          <<  左移   向左移动,右侧补0
+          >>  右移   向右移动去掉低位
+
+    示例:
+       14  -->01110
+       19  -->10011
+       14&19 = 00010 = 2   1,0则0
+       14|19 = 11111 = 31  遇1则1 
+       14^19 = 11101 = 29  
+       14<<2 = 111000 = 56
+       14>>2 = 11 =3
+
+作业:1,使用select完成一个服务程序,要求将从客户端发来的信息写入到一个文件中
+     同时监控服务端的终端输入(sys.stdin),将输入内容也写入该文件
+
+    2,丰富一下HTTP协议相关的内容
+
+    3,复习函数的使用(函数设计,传参)

@@ -1,0 +1,105 @@
+一,基于poll方法的IO多路复用
+  1.p=select.poll()
+    功能:创建poll对象
+    返回值:poll对象
+
+  2.p.register(fd,event)
+    功能:注册关注的IO事件
+    参数:fd  要关注的IO
+        event 要关注的IO事件类型
+
+    常用event类型:
+    pollin  读IO事件(rlist)
+    pollout 写IO事件(wlist)
+    pollerr 异常io (xlist)
+    pollhup 断开连接
+    
+    示例:p.register(sockfd,pollin|pollerr)
+
+  3.unregister(fd)
+    功能:取消对IO的关注
+    参数:IO对象或IO对象的fileno
+
+  4.events=p.poll()
+    功能:阻塞等待监控的IO事件发生
+    返回值:返回发生的IO
+          events格式 [(fileno,event),()....]
+          每个元组为一个就绪的IO,元组第一项是该IO的fileno,
+          第二项为该IO就绪事件的类型
+    需要通过fileno寻找对应的IO对象,建立对应字典确保字典中的IO和关注的IO时刻保持一致
+        字典格式:{fileno:io_obj}
+
+  5.poll_server步骤:
+    1,创建套接字
+    2,将套接字register
+    3,创建查找字典,并维护
+    4,循环监控IO发生
+    5,处理发生的IO
+
+二,基于epoll方法的IO多路复用
+  使用方法:基本与poll相同
+    生成对象改成epoll()
+    将所有的事件对象改为EPOLL类型
+
+  epoll特点:
+   1,epoll效率比select poll要高
+   2,epoll(由内核空间大小决定)监控IO数量比select  poll (1024个)要多
+   3,epoll的触发方式比poll要多(EPOLLET边缘触发)
+
+三,struct模块的使用
+  1.原理:将一组简单数据进行打包转换为bytes格式发送
+        或者将一组bytes格式数据,进行解析
+  2.接口使用:
+    1,struct(fmt)
+      功能:生成结构化对象
+      参数:fmt 定制的数据结构
+      示例: 要发送的数据 1  b'abcd'  1.75
+           fmt参数  'i4sf'
+
+    2,st.pack(v1,v2,v3...)
+      功能:将一组数据按照指定格式打包转换为bytes
+      参数:要打包的数据
+      返回值:bytes字节串
+
+    3.st.unpack(bytes_data)
+      功能:将bytes字节串按照指定的格式解析  格式需双方约定好
+      参数:要解析的字节串
+      返回值:解析后的内容
+
+      示例:#发送
+          import struck
+          st=struck.struck('i4sf')
+          data=st.pack(1,b'abcd',1.75)
+          #解析
+          import struck
+          st=struck.struck('i4sf')
+          data1=st.unpack(data)
+    4,struct.pack(fmt,v1,v2...)
+      struct.unpack(fmt,bytes_data)
+      说明:可以使用struct模块直接调用pack unpack
+      此时两个函数第一个参数传入fmt.其他用法功能相同
+
+
+四,本地套接字
+  1,功能:用于本地两个程序之间进行数据的收发
+  2,套接字文件:用于本地套接字之间通讯时,进行数据传输的介质
+  3,创建本地套接字的流程:
+    1,创建本地套接字
+      sockfd=socket(AF_UNIX,SOCK_STREAM)
+    2,绑定本地套接字文件
+      sockfd.bind(file)
+    3,监听,接受客户端连接,消息收发
+      listen()   accept()   recv() send()
+    4,关闭套接字
+
+cookie:linux 下文件类型
+       b:块设备文件(驱动)
+       c:字符设备文件
+       d:目录
+       -:普通文件
+       l:链接文件
+       s:套接字文件
+       p:管道文件
+
+
+

@@ -1,4 +1,0 @@
-Hello Python
-Today is a nice day
-tomorrow is nice too
-good good study, day day up

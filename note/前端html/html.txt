@@ -1,0 +1,63 @@
+一,HTML标签介绍
+  1,超链接使用:
+    特殊:锚点连接:跳转至指定文件的指定位置
+    实现:在指定位置添加锚点<a name='7'></a>
+        完善超链接的链接地址:当前页面跳转:<a href='#7'>文本</a>
+                          跳转到指定页面位置:<a href='页面路径 #位置名'>文本</a>
+  2,表格标签:
+    表格:通过行和单元格实现辅助排版或数据的展示
+    语法:
+      <table>                       表格
+        <tr>                         行
+          <th>姓名</th>              单元格
+          <td>tabel data</td>       单元格
+        </tr>
+      </table>
+
+        th标签与td用法一致,自带了加粗和居中效果
+    属性:
+        ①table属性: 
+            border          外边框,单元格也会自动加边框
+            width/height    表格宽度/高度,默认表格尺寸由内容决定
+                            如果给表格固定尺寸,会自动给单元格分配空间
+            cellspacing     单元格间距
+            cellpadding     单元格内容与边框距离
+            bgcolor         表格背景色,取颜色英文单词
+
+            例:<table border="5px" cellspacing='20px' cellpadding='10px' bgcolor='green'>
+
+        ②tr属性:(实际设置的是该行中单元格的状态)
+            bgcolor:设置每一行的背景颜色
+            align:设置当前行中内容的水平对齐方式,默认居中 left/center/right
+            valign:设置内容的垂直对齐方式,默认居中, top/middle/bottom
+        ③th或td属性
+            bgcolor
+            width/height
+            align
+            valign
+
+    单元格合并:(重点)
+        借助单元格的属性colspan(collum span)实现快列合并
+        rowspan实现跨行合并
+        取值:无单位的数值,表示包含自身在,内合并几个单元格
+
+        注意:一旦发生单元格合并,需要删除多余的单元格保证表格结构统一
+            垮列合并:删除当前行中多余的单元格
+            跨行合并:删除其后行中多余的单元格
+    表格行分组:
+        <table>
+            <thead>
+                <tr>
+                    <td></td>
+                </tr>    
+            </thead>
+            <tfoot></tfoot>
+            <tbody></tbody>
+        </table>
+        使用:1,结构化的分组标签根据需要添加,不是必填项
+            2,默认所有的行都会自动加入tbody中
+            3.推荐书写顺序thead tfoot tbody,不影响表格结构
+              优化加载速度
+              
+
+  3,表单标签:
